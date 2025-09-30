@@ -1,0 +1,15 @@
+# Dependencies
+/node_modules
+
+# Build output
+/dist
+/src-tauri/target
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor-specific
+.vscode
+

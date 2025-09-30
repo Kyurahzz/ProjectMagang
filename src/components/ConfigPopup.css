@@ -1,0 +1,347 @@
+/* Notif global config saved (Jika ingin dipisah, pindahkan ke CSS utama) */
+.global-config-saved-notif {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  z-index: 9999;
+  color: #2196f3;
+  background: #e3f2fd;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-size: 1.05em;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.08);
+  animation: fadeInOut 2s;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* --- TEMA LIGHT MODE (DEFAULT) --- */
+:root {
+  --config-bg: #F6FAFF;
+  --config-header: #A7C7E7;
+  --config-border: #D1D9E1;
+  --config-label: #3A4A5A;
+  --config-input-bg: #fff;
+  --config-input-text: #3A4A5A;
+  --config-btn: #E3EAF6;
+  --config-btn-hover: #C9D6E3;
+  --config-btn-save: #A7C7E7;
+  --config-btn-save-hover: #7FB3DD;
+  --warning-text: #D32F2F;
+  --warning-bg: #FFEBEE;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.config-popup {
+  background: var(--config-bg);
+  border-radius: 12px;
+  min-width: 600px;
+  max-width: 95vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  border: 1.5px solid var(--config-border);
+  overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.config-header {
+  background: var(--config-header);
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s ease;
+}
+
+.popup-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.config-content {
+  padding: 32px;
+  background: var(--config-bg);
+  transition: background-color 0.3s ease;
+}
+
+.config-warning {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.config-row {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 18px;
+}
+
+.config-label-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.config-label-col label {
+  color: var(--config-label);
+  font-size: 1rem;
+  margin-bottom: 6px;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.config-label-col input {
+  background: var(--config-input-bg);
+  color: var(--config-input-text);
+  border: 1px solid var(--config-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  margin-bottom: 0;
+  box-shadow: none;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.config-label-col input:focus {
+  outline: none;
+  border-color: var(--config-header);
+  box-shadow: 0 0 0 2px rgba(86, 136, 210, 0.15);
+}
+
+.config-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.config-actions > div {
+    display: flex;
+    gap: 16px;
+}
+
+.config-btn {
+  background: var(--config-btn);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.popup-btn-default {
+  background: #E3EAF6;
+  color: #5688D2;
+  border: 1px solid #C9D6E3;
+  box-shadow: none;
+}
+.popup-btn-default:hover {
+  background: #C9D6E3;
+  color: #4274B3;
+}
+.popup-btn-save.config-btn {
+  background: var(--config-btn-save);
+}
+.popup-btn-save.config-btn:hover {
+  background: var(--config-btn-save-hover);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--config-btn);
+  transition: background-color 0.2s ease;
+  color: var(--config-label);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.header-btn:hover {
+  background-color: var(--config-btn-hover);
+}
+
+.header-btn img {
+  width: 22px;
+  height: 22px;
+  filter: grayscale(1) brightness(0.5) sepia(1) hue-rotate(180deg) saturate(3);
+  transition: filter 0.3s ease;
+}
+
+.header-btn.edit-btn {
+  padding: 12px 16px;
+  gap: 8px;
+  color: #6B84AD;
+}
+
+.header-btn.delete-btn {
+  padding: 12px;
+}
+
+@media (max-width: 700px) {
+  .config-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* --- TEMA DARK MODE --- */
+[data-theme='dark'] {
+  /* Variabel Dark Mode untuk Popup */
+  --config-bg: #4D4D4D;
+  --config-header: #3A3D42;
+  --config-border: #5a5a5a;
+  --config-label: #FFFFFF;
+  --config-input-bg: #FFFFFF;
+  --config-input-text: #1A202C;
+  --config-btn: #4B5563;
+  --config-btn-hover: #6b7280;
+  --config-btn-save: #5688D2;
+  --config-btn-save-hover: #4a7ac0;
+  --warning-text: #FFCDD2;
+  --warning-bg: rgba(211, 47, 47, 0.2);
+}
+
+/* Override untuk tombol yang warnanya hardcoded */
+[data-theme='dark'] .popup-btn-default {
+  background: var(--config-btn);
+  color: var(--config-label);
+  border-color: var(--config-border);
+}
+[data-theme='dark'] .popup-btn-default:hover {
+  background: var(--config-btn-hover);
+}
+
+/* Mengubah warna teks dan ikon tombol Edit & Delete jadi putih */
+[data-theme='dark'] .header-btn.edit-btn,
+[data-theme='dark'] .header-btn.delete-btn {
+  color: #FFFFFF;
+}
+[data-theme='dark'] .header-btn img {
+  filter: brightness(0) invert(1);
+}
+
+
+/* --- BAGIAN YANG DIPERBAIKI --- */
+
+/* Wadah untuk bubble-bubble topic */
+.topic-tags-display {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Pesan jika tidak ada topic */
+.no-topics-message {
+  font-size: 0.9rem;
+  color: #9CA3AF;
+  padding: 8px 0;
+}
+
+/* Gaya untuk bubble-nya (sudah diubah) */
+.topic-tag {
+  display: flex;
+  align-items: center;
+  background-color: var(--config-input-bg);
+  color: var(--config-label);
+  font-weight: 500;
+  border: 1px solid var(--config-border);
+  border-radius: 16px; /* Dibuat membulat */
+  padding: 5px 12px;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+/* Penyesuaian untuk Dark Mode */
+[data-theme='dark'] .topic-tag {
+  background-color: #FFFFFF;
+  color: #1A202C;
+  border-color: #D1D9E1;
+}
+
+/* Tombol hapus di dalam bubble (disesuaikan warnanya) */
+.topic-tag-remove {
+  background: none;
+  border: none;
+  color: var(--config-label);
+  cursor: pointer;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0;
+  font-weight: bold;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.topic-tag-remove:hover {
+  opacity: 1;
+  color: #D32F2F;
+}
+
+/* Penyesuaian Tombol Hapus untuk Dark Mode */
+[data-theme='dark'] .topic-tag-remove {
+  color: #1A202C;
+}
+
+/* Input field untuk menambah topic baru */
+.topic-input-field {
+  background: var(--config-input-bg);
+  color: var(--config-input-text);
+  border: 1px solid var(--config-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0; 
+}
+
+.topic-input-field:focus {
+  outline: none;
+  border-color: var(--config-header);
+  box-shadow: 0 0 0 2px rgba(86, 136, 210, 0.15);
+}

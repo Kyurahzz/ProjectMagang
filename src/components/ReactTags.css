@@ -1,0 +1,94 @@
+.ReactTags__tags {
+    position: relative;
+}
+
+.ReactTags__tagInput {
+    width: 200px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.ReactTags__tagInput input,
+.ReactTags__tagInput input:focus {
+    height: 31px;
+    margin: 0;
+    font-size: 12px;
+    width: 100%;
+    border: 1px solid #eee;
+    padding: 0 4px;
+}
+
+.ReactTags__selected {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.ReactTags__tag {
+    font-size: 12px;
+    border: 1px solid #ddd;
+    background: #eee;
+    border-radius: 2px;
+    color: black;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px;
+    margin-right: 5px; /* Diberi margin agar tidak bentrok dengan custom style */
+}
+
+.ReactTags__remove {
+    color: #aaa;
+    margin-left: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+}
+
+.ReactTags__suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.ReactTags__suggestions ul {
+    list-style-type: none;
+    box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
+    background: white;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-radius: 2px;
+}
+
+.ReactTags__suggestions li {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 10px;
+    margin: 0;
+    font-size: 12px;
+}
+
+.ReactTags__suggestions li mark {
+    text-decoration: underline;
+    background: none;
+    font-weight: 600;
+}
+
+.ReactTags__suggestions li:hover {
+    cursor: pointer;
+    background: #eee;
+}
+
+.ReactTags__suggestions li.ReactTags__activeSuggestion {
+    background: #b7cfe0;
+    cursor: pointer;
+}
+
+.ReactTags__tagInput.is-invalid {
+    border-color: #dc3545;
+}

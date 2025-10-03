@@ -221,54 +221,57 @@ body, html {
 
 /* --- KONTEN SPESIFIK DI DALAM PANEL --- */
 
-/* === [DIUBAH] WADAH INFO DIBUAT TIDAK TERLIHAT === */
 .info-group-panel {
-  /* Style visual (background, border, padding, shadow) dihapus agar tidak muncul sebagai box */
   display: flex;
   flex-direction: column;
-  gap: 5px; /* Jarak antar info disamakan dengan halaman Gyro */
-  margin-bottom: 20px; /* Jarak ke panel di bawahnya tetap ada */
+  gap: 5px;
+  margin-bottom: 20px;
 }
 
-/* === Style untuk last-update-box tidak perlu diubah dari sebelumnya === */
 .last-update-box {
   background-color: var(--bg-panel-inner);
   border-radius: 8px;
-  padding: 10px 15px;
+  padding: 18px 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: background-color 0.3s ease;
-  margin-bottom: 0; /* Margin bawah di-handle oleh 'gap' dari parent */
+  margin-bottom: 0; 
+  display: flex; 
+  align-items: center; 
 }
 
 .last-update-value {
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--text-secondary);
   font-family: 'Roboto', monospace;
 }
 
 .status-section {
-  margin-bottom: 0; /* Margin dihilangkan karena jarak diatur oleh 'gap' dari parent */
+  margin-bottom: 0;
 }
-/* === Style untuk status-container tidak perlu diubah dari sebelumnya === */
+
 .status-container {
   display: flex;
   gap: 50px;
   background-color: var(--bg-panel-inner);
   border: 1px solid var(--border-primary);
   border-radius: 8px;
-  padding: 15px;
+  padding: 18px 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  align-items: center;
 }
 .status-item {
   display: flex;
   flex-direction: column;
 }
+
 .status-label {
   font-size: 12px;
   text-transform: uppercase;
   margin-bottom: 5px;
   color: var(--text-secondary);
+  font-weight: 500;
 }
 .status-image { 
   max-width: 65px;
@@ -537,13 +540,13 @@ body, html {
 }
 [data-theme='dark'] .input-group input {
   background-color: #FFFFFF; /* Latar belakang input jadi putih */
-  color: #1A202C;            /* Warna teks input jadi hitam */
+  color: #1A202C;           /* Warna teks input jadi hitam */
   border: 1px solid #D1D9E1; /* Memberi border agar terlihat jelas */
 }
 [data-theme='dark'] .input-group input:disabled {
   background-color: var(--bg-disabled); /* Kembali ke warna abu-abu disabled */
-  color: #9CA3AF;                      /* Warna teks abu-abu */
-  border: 1px solid #4B5563;        /* Border abu-abu gelap */
+  color: #9CA3AF;                       /* Warna teks abu-abu */
+  border: 1px solid #4B5563;       /* Border abu-abu gelap */
 }
 
 
@@ -646,4 +649,3 @@ body, html {
   color: var(--config-input-text);
   min-width: 150px;
 }
-

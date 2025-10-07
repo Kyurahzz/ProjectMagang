@@ -4,23 +4,16 @@ import ConfigPopup from './ConfigPopup';
 import { useConfig } from './ConfigContext';
 
 // --- 1. Asset Imports ---
-// Ikon Aksi
 import iconPlay from '../assets/icon/PropertySend.png';
 import iconStop from '../assets/icon/PropertyStop.png';
 import iconDelete from '../assets/icon/PropertyDelete.png';
 import iconEdit from '../assets/icon/PropertyEdit.png';
-
-// Ikon Kartu
 import Frame1 from '../assets/gyro/Frame.png';
 import Frame2 from '../assets/gyro/Frame1.png';
 import Frame3 from '../assets/gyro/Frame2.png';
-
-// Gambar Kapal
 import shipFrontView from '../assets/gyro/ShipFront.png';
 import shipTopView from '../assets/gyro/ShipTop.png';
 import shipSideView from '../assets/gyro/ShipSide.png';
-
-// Gambar Status
 import Waiting from '../assets/status/Property 1=Waiting.png';
 import Active from '../assets/status/Property 1=Active.png';
 import Stop from '../assets/status/Property 1=Stop.png';
@@ -57,7 +50,7 @@ const HeadingGauge = ({ heading }) => {
         <circle cx={center} cy={center} r={radius} fill="#06A3DD" stroke="#e0e0e0" strokeWidth="2" />
         <g>{ticks}</g>
       </svg>
-      <img src={shipTopView} alt="Ship Top View" className="ship-indicator stationary-ship" style={{ transform: `translate(-50%, -50%) rotate(${heading}deg)` }} />
+      <img src={shipTopView} alt="Ship Top View" className="ship-indicator stationary-ship" style={{ transform: `translate(-50%, -50%) rotate(${heading - 90}deg)` }} />
     </div>
   );
 };
@@ -141,6 +134,7 @@ function GyroPage() {
   const [simData, setSimData] = useState({ pitch: 0, heading: 0, roll: 0, headingRate: 15, lastUpdateTime: '03 Oktober 2025, 09:52:00', status: 'Active' });
   const [editData, setEditData] = useState({ heading: '0', pitch: '0', roll: '0' });
   const [isEditing, setIsEditing] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(false);
   const [gyroConfig, setGyroConfig] = useState({ ip: '192.168.1.10', port: '1884', topic: ['gyro/sim', 'device/attitude'], username: 'user_gyro', password: 'password123', updateRate: '500' });
 
   // --- B. Handlers ---
@@ -172,6 +166,11 @@ function GyroPage() {
   };
   
   const handleEditToggle = () => {
+    if (isSimulating) {
+      console.log("Tidak bisa mengedit saat simulasi berjalan.");
+      return;
+    }
+    
     if (isEditing) {
       setSimData(prev => ({ ...prev, heading: parseFloat(editData.heading) || 0, pitch: parseFloat(editData.pitch) || 0, roll: parseFloat(editData.roll) || 0 }));
       setIsEditing(false);
@@ -181,9 +180,47 @@ function GyroPage() {
     }
   };
   
-  const handlePlay = () => console.log("Start Simulation");
-  const handleStop = () => console.log("Stop Simulation");
-  const handleDelete = () => console.log("Delete Simulation Data");
+  const handlePlay = () => {
+    console.log("Start Simulation");
+    setIsSimulating(true);
+    setIsEditing(false); 
+  };
+
+  const handleStop = () => {
+    console.log("Stop Simulation");
+    setIsSimulating(false);
+  };
+
+  const handleDelete = () => {
+    console.log("Menghapus semua data simulasi.");
+    setSimData({
+      pitch: 0,
+      heading: 0,
+      roll: 0,
+      headingRate: 0,
+      lastUpdateTime: 'N/A',
+      status: 'Waiting'
+    });
+  };
+
+  const handleClearEditData = () => {
+    console.log("Menghapus input di panel Edit Data.");
+    setEditData({ heading: '0', pitch: '0', roll: '0' });
+  };
+
+  const handleDecreaseHeadingRate = () => {
+    setSimData(prev => ({
+      ...prev,
+      headingRate: Math.max(0, prev.headingRate - 1) 
+    }));
+  };
+
+  const handleIncreaseHeadingRate = () => {
+    setSimData(prev => ({
+      ...prev,
+      headingRate: prev.headingRate + 1 
+    }));
+  };
 
   // --- C. Fungsi Helper & Formatter ---
   const renderGyroStatusImage = () => {
@@ -224,7 +261,6 @@ function GyroPage() {
       />
 
       <div className="main-content">
-        {/* Panel Kiri: Simulasi Data */}
         <div className="data-display-panel">
           <div className="panel-header">
             <h2>Simulasi Data</h2>
@@ -260,9 +296,13 @@ function GyroPage() {
                 <h3>{formatHeading(simData.heading)}</h3>
               </div>
               <HeadingGauge heading={simData.heading} />
-              <div className="card-footer">
+              <div className="card-footer heading-rate-control">
                 <span>Heading Rate</span>
-                <span>{simData.headingRate}°/min ➤</span>
+                <div className="rate-control-group">
+                    <button className="rate-btn btn-decrease" onClick={handleDecreaseHeadingRate}>◀</button>
+                    <span className="rate-value">{simData.headingRate}°/min</span>
+                    <button className="rate-btn btn-increase" onClick={handleIncreaseHeadingRate}>▶</button>
+                </div>
               </div>
             </div>
             <div className="gyro-card">
@@ -274,22 +314,21 @@ function GyroPage() {
             </div>
           </div>
           <div className="action-buttons-container">
-            <button className="action-btn" onClick={handlePlay}><img src={iconPlay} alt="Play" /></button>
-            <button className="action-btn stop-btn" onClick={handleStop}><img src={iconStop} alt="Stop" /></button>
+            <button className="action-btn" onClick={handlePlay} disabled={isSimulating}><img src={iconPlay} alt="Play" /></button>
+            <button className="action-btn stop-btn" onClick={handleStop} disabled={!isSimulating}><img src={iconStop} alt="Stop" /></button>
             <div className="separator"></div>
             <button className="action-btn delete-btn" onClick={handleDelete}><img src={iconDelete} alt="Delete" />Delete</button>
           </div>
         </div>
 
-        {/* Panel Kanan: Edit Data */}
         <div className="edit-data-panel">
           <div className="panel-header">
             <h2>Edit Data</h2>
             <div className="header-actions">
-              <button className="header-action-btn edit-btn" onClick={handleEditToggle}>
+              <button className="header-action-btn edit-btn" onClick={handleEditToggle} disabled={isSimulating}>
                 <img src={iconEdit} alt="Edit" />
               </button>
-              <button className="header-action-btn delete-btn">
+              <button className="header-action-btn delete-btn" onClick={handleClearEditData}>
                 <img src={iconDelete} alt="Delete" />
               </button>
             </div>
@@ -319,4 +358,3 @@ function GyroPage() {
 }
 
 export default GyroPage;
-

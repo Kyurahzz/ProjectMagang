@@ -1,9 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Latar Belakang */
+  /* Warna Dasar */
+  --button-blue: #5688D2;
+  --button-red: #FF6262;
+
+  /* Latar Belakang (Light Mode) */
   --bg-primary: #ffffff;
-  --bg-secondary: #fff;
+  --bg-secondary: #F9FAFB; /* Sedikit berbeda dari putih agar ada kontras */
   --bg-panel: #F0F6FF;
   --bg-panel-edit: #D0E3FF;
   --bg-panel-inner: #ffffff;
@@ -12,27 +16,25 @@
   --bg-disabled: #E5E7EB;
   --bg-hover: #F3F4F6;
   
-  /* Teks */
+  /* Teks (Light Mode) */
   --text-primary: #1A202C;
-  --text-secondary: #1A202C;
+  --text-secondary: #4A5568;
   --text-on-action: #ffffff;
+  --text-disabled: #9CA3AF;
   
   /* Border & Shadow */
   --border-primary: #D1D9E1;
   --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --sidebar-shadow: 3px 0px 15px -3px rgba(0,0,0,0.05);
 
-  /* Tombol & Aksen */
-  --button-blue: #5688D2;
-  --button-red: #FF6262;
+  /* Sidebar */
   --sidebar-active-bg: #F3F4F6;
 }
 
-/* [data-theme='dark'] akan aktif saat dark mode dinyalakan */
 [data-theme='dark'] {
-  /* Latar Belakang */
-  --bg-primary: #43464B;
-  --bg-secondary: #43464B;
+  /* Latar Belakang (Dark Mode) */
+  --bg-primary: #2B2E32;
+  --bg-secondary: #1A202C;
   --bg-panel: #2B2E32;
   --bg-panel-edit: #4D4D4D;
   --bg-panel-inner: #43464B;
@@ -41,24 +43,25 @@
   --bg-disabled: #4B5563;
   --bg-hover: #2D3748;
   
-  /* Teks */
+  /* Teks (Dark Mode) */
   --text-primary: #ffffff;
   --text-secondary: #ffffff;
+  --text-disabled: #ffffff;
   
   /* Border & Shadow */
   --border-primary: transparent;
   --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --sidebar-shadow: 3px 0px 15px -3px rgba(255,255,252,0.05);
+  --sidebar-shadow: 3px 0px 15px -3px rgba(0,0,0,0.2);
 
-  /* Tombol & Aksen */
-  --button-blue: #5688D2;
-  --button-red: #FF6262;
+  /* Sidebar */
   --sidebar-active-bg: #2D3748;
 }
 
 /* --- GLOBAL FONT STYLE --- */
 body, html {
   font-family: 'Roboto', sans-serif;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 /* --- SIDEBAR --- */
@@ -111,9 +114,11 @@ body, html {
   transition: opacity 0.2s ease 0.1s, transform 0.2s ease 0.1s;
   white-space: nowrap;
 }
-.sidebar:hover .sidebar-icon:not(.active) {
+.sidebar:hover .sidebar-icon {
   width: calc(100% - 24px);
-  background-color: var(--bg-primary);
+}
+.sidebar:hover .sidebar-icon:not(.active):hover {
+  background-color: var(--bg-hover);
 }
 .sidebar:hover .sidebar-label {
   opacity: 1;
@@ -122,23 +127,12 @@ body, html {
 .sidebar-icon.active {
   background-color: var(--sidebar-active-bg);
 }
-.sidebar:hover .sidebar-icon.active {
-  width: calc(100% - 24px);
-  background-color: var(--sidebar-active-bg);
-}
-.sidebar-icon.active .sidebar-label {
-  color: var(--text-primary);
-}
-.sidebar-icon.active img {
-  filter: none;
-}
 
 /* --- KONTEN UTAMA --- */
 .simulator-container {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  background: var(--bg-secondary);
   transition: background-color 0.3s ease;
 }
 .main-content-wrapper {
@@ -147,8 +141,6 @@ body, html {
   flex-direction: column;
   padding: 20px;
   width: calc(100% - 80px);
-  position: relative;
-  z-index: 1;
 }
 .simulator-header {
   display: flex;
@@ -179,30 +171,22 @@ body, html {
 }
 
 /* --- PANEL UTAMA (SIMULASI & EDIT) --- */
+.data-display-panel,
+.edit-data-panel {
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow-light);
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
 .data-display-panel {
   background-color: var(--bg-panel);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: var(--shadow-light);
-  display: flex;
-  flex-direction: column;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-.edit-data-panel {
-  background-color: var(--bg-panel-edit);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: var(--shadow-light);
-  display: flex;
-  flex-direction: column;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-.data-display-panel {
   flex: 2;
 }
 .edit-data-panel {
+  background-color: var(--bg-panel-edit);
   flex: 1;
   min-width: 300px;
 }
@@ -219,8 +203,37 @@ body, html {
   margin: 0;
 }
 
-/* --- KONTEN SPESIFIK DI DALAM PANEL --- */
+/* --- IKON AKSI DI PANEL EDIT --- */
+.panel-header-actions {
+  display: flex;
+  gap: 10px;
+}
+.panel-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+.panel-icon-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+.panel-icon-btn img {
+  width: 20px;
+  height: 20px;
+}
+.btn-edit-icon {
+  background-color: var(--button-blue);
+}
+.btn-delete-icon {
+  background-color: var(--button-red);
+}
 
+/* --- KONTEN SPESIFIK DI DALAM PANEL --- */
 .info-group-panel {
   display: flex;
   flex-direction: column;
@@ -228,15 +241,12 @@ body, html {
   margin-bottom: 20px;
 }
 
-.last-update-box {
+.last-update-box, .status-container {
   background-color: var(--bg-panel-inner);
   border-radius: 8px;
   padding: 18px 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.3s ease;
-  margin-bottom: 0; 
-  display: flex; 
-  align-items: center; 
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .last-update-value {
@@ -246,26 +256,15 @@ body, html {
   font-family: 'Roboto', monospace;
 }
 
-.status-section {
-  margin-bottom: 0;
-}
-
 .status-container {
   display: flex;
   gap: 50px;
-  background-color: var(--bg-panel-inner);
-  border: 1px solid var(--border-primary);
-  border-radius: 8px;
-  padding: 18px 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
   align-items: center;
 }
 .status-item {
   display: flex;
   flex-direction: column;
 }
-
 .status-label {
   font-size: 12px;
   text-transform: uppercase;
@@ -299,7 +298,7 @@ body, html {
   display: flex; 
   gap: 15px;
 }
-.coordinate-box { 
+.coordinate-box, .data-box { 
   flex: 1; 
   background-color: var(--bg-panel-inner); 
   border: 1px solid var(--border-primary); 
@@ -315,25 +314,15 @@ body, html {
   margin-bottom: 5px;
   color: var(--text-primary);
 }
-.coordinate-label { 
+.coordinate-label, .data-label { 
   font-size: 12px; 
   color: var(--text-secondary); 
   text-transform: uppercase;
 }
-
 .other-data-section {
   display: flex;
   gap: 15px;
   margin-bottom: 20px;
-}
-.data-box { 
-  flex: 1; 
-  background-color: var(--bg-panel-inner);
-  border: 1px solid var(--border-primary);
-  border-radius: 8px; 
-  padding: 15px; 
-  text-align: center;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .data-value { 
   font-size: 20px; 
@@ -344,12 +333,8 @@ body, html {
   font-size: 14px; 
   color: var(--text-secondary);
 }
-.data-label { 
-  font-size: 12px; 
-  color: var(--text-secondary); 
-  text-transform: uppercase;
-}
 
+/* --- FORM INPUTS --- */
 .input-group { 
   display: flex; 
   flex-direction: column; 
@@ -368,10 +353,9 @@ body, html {
   color: var(--text-primary);
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-
 .input-group input:disabled { 
   background-color: var(--bg-disabled); 
-  color: #9CA3AF;
+  color: var(--text-disabled);
   cursor: not-allowed;
 }
 
@@ -442,11 +426,6 @@ body, html {
   width: 18px; 
   height: 18px; 
 }
-.action-icon-btn:disabled, .action-delete-btn:disabled { 
-  opacity: 0.6; 
-  cursor: not-allowed; 
-  transform: none; 
-}
 
 /* --- TOMBOL DEFAULT & SAVE --- */
 .edit-panel-actions { 
@@ -483,162 +462,44 @@ body, html {
 .edit-panel-actions .btn-save:hover:not(:disabled) { 
   background-color: #4a7ac0; 
 }
+
+/* --- KONDISI DISABLED UMUM --- */
+.action-icon-btn:disabled, 
+.action-delete-btn:disabled,
+.panel-icon-btn:disabled,
 .edit-panel-actions button:disabled { 
   opacity: 0.6; 
   cursor: not-allowed; 
 }
-
-/* --- IKON AKSI DI PANEL EDIT --- */
-.panel-header-actions {
-  display: flex;
-  gap: 10px;
+.action-icon-btn:disabled:hover,
+.action-delete-btn:disabled:hover {
+  transform: none;
 }
-.panel-icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  display: flex;
+
+/* --- TOPIC TAGS (UNTUK CONFIG) --- */
+.topic-tag {
+  background-color: var(--bg-hover);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 16px;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s ease;
+  gap: 8px;
+  font-size: 0.9rem;
 }
-.panel-icon-btn:hover {
-  opacity: 0.9;
-}
-.panel-icon-btn img {
-  width: 20px;
-  height: 20px;
-}
-.btn-edit-icon {
-  background-color: var(--button-blue);
-}
-.btn-delete-icon {
-  background-color: var(--button-red);
-}
-
-/* --- KONDISI DISABLED --- */
-.data-display-panel.disabled,
-.edit-data-panel.disabled {
-  opacity: 0.5;
-  filter: grayscale(80%);
-  pointer-events: none;
-}
-.data-display-panel.disabled *,
-.edit-data-panel.disabled * {
-    pointer-events: none;
-}
-
-/* --- OVERRIDE KHUSUS DARK MODE --- */
-
-[data-theme='dark'] .edit-data-panel {
-  background-color: var(--bg-panel-edit);
-}
-[data-theme='dark'] .coordinate-box {
-  background-color: #2B2E32; /* Dibuat lebih gelap agar kontras */
-}
-[data-theme='dark'] .input-group input {
-  background-color: #FFFFFF; /* Latar belakang input jadi putih */
-  color: #1A202C;           /* Warna teks input jadi hitam */
-  border: 1px solid #D1D9E1; /* Memberi border agar terlihat jelas */
-}
-[data-theme='dark'] .input-group input:disabled {
-  background-color: var(--bg-disabled); /* Kembali ke warna abu-abu disabled */
-  color: #9CA3AF;                       /* Warna teks abu-abu */
-  border: 1px solid #4B5563;       /* Border abu-abu gelap */
-}
-
-
-/* Media query untuk tampilan responsif */
-@media (max-width: 968px) {
-  .main-content {
-    flex-direction: column;
-  }
-  
-  .coordinate-group {
-    flex-direction: column;
-  }
-  
-  .other-data-section {
-    flex-direction: column;
-  }
-  
-  .status-container {
-    flex-direction: column;
-    gap: 15px;
-  }
-}
-
-[data-theme='dark'] .topic-tag {
-  background-color: #4B5563;
-  color: var(--config-label);
-}
-
-/* Tombol hapus di dalam bubble */
 .topic-tag-remove {
   background: none;
   border: none;
-  color: #5688D2;
+  color: var(--button-blue);
   cursor: pointer;
   font-size: 1.2rem;
   line-height: 1;
   padding: 0;
   font-weight: bold;
 }
-
-[data-theme='dark'] .topic-tag-remove {
-  color: var(--config-label);
-}
-
 .topic-tag-remove:hover {
-  color: #D32F2F;
+  color: var(--button-red);
 }
-
-/* Input field untuk menambah topic baru */
-.topic-input-field {
-  /* Samakan gayanya dengan input lain di form */
-  background: var(--config-input-bg);
-  color: var(--config-input-text);
-  border: 1px solid var(--config-border);
-  border-radius: 6px;
-  padding: 10px 14px;
-  font-size: 1rem;
-  width: 100%; /* Lebar penuh */
-  box-sizing: border-box; /* Agar padding tidak menambah lebar */
-}
-
-.topic-input-field:focus {
-  outline: none;
-  border-color: var(--config-header);
-  box-shadow: 0 0 0 2px rgba(86, 136, 210, 0.15);
-}
-
-
-[data-theme='dark'] .topic-tag {
-  background-color: #4B5563;
-  color: var(--config-label);
-}
-
-.topic-tag-remove {
-  background: none;
-  border: none;
-  color: #5688D2;
-  cursor: pointer;
-  font-size: 1.2rem;
-  line-height: 1;
-  padding: 0;
-  font-weight: bold;
-}
-
-[data-theme='dark'] .topic-tag-remove {
-  color: var(--config-label);
-}
-
-.topic-tag-remove:hover {
-  color: #D32F2F;
-}
-
 .topic-input-field {
   flex-grow: 1;
   border: none;
@@ -646,6 +507,37 @@ body, html {
   padding: 4px 0;
   font-size: 1rem;
   background-color: transparent;
-  color: var(--config-input-text);
+  color: var(--text-primary);
   min-width: 150px;
+}
+
+/* --- OVERRIDE KHUSUS DARK MODE --- */
+[data-theme='dark'] .coordinate-box {
+  background-color: #2B2E32; 
+}
+[data-theme='dark'] .input-group input {
+  background-color: #4B5563; 
+  color: #9CA3AF;           
+  border-color: transparent; 
+  opacity: 0.8;              
+}
+[data-theme='dark'] .topic-tag {
+  background-color: #4B5563;
+  color: var(--text-primary);
+}
+[data-theme='dark'] .topic-tag-remove {
+  color: var(--text-secondary);
+}
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 968px) {
+  .main-content {
+    flex-direction: column;
+  }
+  .coordinate-group,
+  .other-data-section,
+  .status-container {
+    flex-direction: column;
+    gap: 15px;
+  }
 }

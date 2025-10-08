@@ -5,7 +5,7 @@ import './ConfigPopup.css';
 import iconEdit from '../assets/icon/PropertyEdit.png';
 import iconDelete from '../assets/icon/PropertyDelete.png';
 
-function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear, onApply }) {
+function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear }) {
   const [isEditing, setIsEditing] = useState(false);
   const [tempConfig, setTempConfig] = useState(config);
   const [warning, setWarning] = useState('');
@@ -83,13 +83,14 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear, onAp
   }
 
   const handleEditClick = () => {
-      if (isEditing) {
-          onApply(tempConfig);
-          setIsEditing(false);
-      } else {
-          setIsEditing(true);
-      }
-      setWarning('');
+    if (isEditing) {
+      // Saat mode editing dan klik Apply, gunakan handleSave
+      handleSave();
+    } else {
+      // Masuk mode editing
+      setIsEditing(true);
+    }
+    setWarning('');
   }
 
   return (
@@ -129,8 +130,6 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear, onAp
             <div className="config-label-col">
               <label>Topic</label>
               
-              {/* --- URUTANNYA DIBALIK DI SINI --- */}
-              {/* Input field, hanya muncul saat mode edit (SEKARANG DI ATAS) */}
               {isEditing && (
                 <input
                   className="topic-input-field"
@@ -141,7 +140,6 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear, onAp
                 />
               )}
 
-              {/* Area untuk menampilkan bubble, selalu terlihat (SEKARANG DI BAWAH) */}
               <div className="topic-tags-display">
                 {tempConfig.topic.map((topic, index) => (
                   <div key={index} className="topic-tag">
@@ -157,8 +155,6 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear, onAp
                   <span className="no-topics-message">No topics configured.</span>
                 )}
               </div>
-              {/* --- AKHIR PERUBAHAN --- */}
-
             </div>
             <div className="config-label-col">
               <label>Update Rate</label>

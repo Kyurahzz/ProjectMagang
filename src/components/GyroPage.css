@@ -387,9 +387,9 @@
 
 /* --- TAMBAHAN: Style untuk Kontrol Heading Rate --- */
 .heading-rate-control {
-  flex-direction: column; /* Mengubah layout jadi vertikal */
-  align-items: center;    /* Menengahkan item */
-  gap: 4px;               /* Memberi sedikit jarak antara tulisan dan kontrol */
+  flex-direction: column; 
+  align-items: center;    
+  gap: 4px;               
 }
 
 /* Penyesuaian untuk tulisan "Heading Rate" */

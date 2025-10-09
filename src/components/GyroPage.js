@@ -8,9 +8,11 @@ import iconPlay from '../assets/icon/PropertySend.png';
 import iconStop from '../assets/icon/PropertyStop.png';
 import iconDelete from '../assets/icon/PropertyDelete.png';
 import iconEdit from '../assets/icon/PropertyEdit.png';
+
 import Frame1 from '../assets/gyro/Frame.png';
 import Frame2 from '../assets/gyro/Frame1.png';
 import Frame3 from '../assets/gyro/Frame2.png';
+
 import shipFrontView from '../assets/gyro/ShipFront.png';
 import shipTopView from '../assets/gyro/ShipTop.png';
 import shipSideView from '../assets/gyro/ShipSide.png';
@@ -18,6 +20,7 @@ import Waiting from '../assets/status/Property 1=Waiting.png';
 import Active from '../assets/status/Property 1=Active.png';
 import Stop from '../assets/status/Property 1=Stop.png';
 
+import GyroActive from '../assets/status/ButtonID=Gyro_icon-Active.png';
 
 // --- 2. Komponen Gauge ---
 const HeadingGauge = ({ heading }) => {

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./GyroPage.css";
 import ConfigPopup from "./ConfigPopup";
+import ConfirmationPopup from "./ConfirmationPopUp";
 import { useConfig } from "./ConfigContext";
-import axios from "axios";
+import { useSensorConfig } from "../hooks/useSensorConfig";
 
 // --- 1. Asset Imports ---
 import iconPlay from "../assets/icon/PropertySend.png";
 import iconStop from "../assets/icon/PropertyStop.png";
-import iconDelete from "../assets/icon/PropertyDelete.png";
-import iconEdit from "../assets/icon/PropertyEdit.png";
+import iconDelete from "../assets/icon/PropertyEdit.png";
+import iconEdit from "../assets/icon/PropertyDelete.png";
 import Frame1 from "../assets/gyro/Frame.png";
 import Frame2 from "../assets/gyro/Frame1.png";
 import Frame3 from "../assets/gyro/Frame2.png";
@@ -229,6 +230,23 @@ function GyroPage() {
   // --- A. State & Context ---
   const { isGyroConfigOpen, closeGyroConfig } = useConfig();
 
+  const defaultGyroConfig = {
+    ip: "192.168.1.10",
+    port: "1884",
+    topic: ["gyro/sim", "device/attitude"],
+    username: "user_gyro",
+    password: "password123",
+    updateRate: "500",
+  };
+
+  const {
+    config: gyroConfig,
+    saveConfig: handleGyroConfigSave,
+    resetToDefault: handleGyroConfigDefault,
+    clearConfig: handleGyroConfigClear,
+    configSaved: gyroConfigSaved, // NEW
+  } = useSensorConfig("gyro", defaultGyroConfig, closeGyroConfig);
+
   const [simData, setSimData] = useState({
     pitch: 0,
     heading: 0,
@@ -237,231 +255,23 @@ function GyroPage() {
     lastUpdateTime: "03 Oktober 2025, 09:52:00",
     status: "Active",
   });
+
   const [editData, setEditData] = useState({
     heading: "0",
     pitch: "0",
     roll: "0",
   });
+
   const [isEditing, setIsEditing] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
-  const [gyroConfig, setGyroConfig] = useState({
-    ip: "192.168.1.10",
-    port: "1884",
-    topic: ["gyro/sim", "device/attitude"],
-    username: "user_gyro",
-    password: "password123",
-    updateRate: "500",
+
+  // State untuk confirmation popup
+  const [confirmPopup, setConfirmPopup] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
   });
-
-  // Fungsi untuk fetch gyro config dari API
-  const fetchGyroConfig = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/api/gyro/config");
-      if (response.data && response.data.data) {
-        const configFromServer = {
-          ip: response.data.data.ip,
-          port: String(response.data.data.port),
-          topic: response.data.data.topics || [],
-          username: response.data.data.username,
-          password: response.data.data.password,
-          updateRate: String(response.data.data.update_rate),
-        };
-        setGyroConfig(configFromServer);
-        localStorage.setItem("gyroConfig", JSON.stringify(configFromServer));
-        console.log("✅ Gyro Config loaded from server");
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.log("⚠️ No Gyro config found on server, using default config.");
-        const savedConfig = localStorage.getItem("gyroConfig");
-        if (savedConfig) {
-          setGyroConfig(JSON.parse(savedConfig));
-        } else {
-          const defaultGyroConfig = {
-            ip: "192.168.1.10",
-            port: "1884",
-            topic: ["gyro/sim", "device/attitude"],
-            username: "user_gyro",
-            password: "password123",
-            updateRate: "500",
-          };
-          setGyroConfig(defaultGyroConfig);
-          localStorage.setItem("gyroConfig", JSON.stringify(defaultGyroConfig));
-        }
-      } else {
-        console.error("Failed to fetch Gyro config:", error.message);
-      }
-    }
-  };
-
-  // Handler untuk save gyro config
-  const handleGyroConfigSave = async (newConfig) => {
-    const isConfigValid = Object.entries(newConfig).every(([key, value]) => {
-      if (key === "topic") return Array.isArray(value) && value.length > 0;
-      return String(value).trim() !== "";
-    });
-
-    if (isConfigValid) {
-      try {
-        const payload = {
-          ip: newConfig.ip,
-          port: parseInt(newConfig.port, 10),
-          username: newConfig.username,
-          password: newConfig.password,
-          update_rate: parseInt(newConfig.updateRate, 10),
-          topics: newConfig.topic,
-        };
-
-        // Coba PATCH config dulu
-        try {
-          const response = await axios.patch(
-            "http://localhost:8080/api/gyro/config",
-            payload
-          );
-
-          if (response.data && response.data.data) {
-            const updatedConfig = {
-              ip: response.data.data.ip,
-              port: String(response.data.data.port),
-              topic: response.data.data.topics || [],
-              username: response.data.data.username,
-              password: response.data.data.password,
-              updateRate: String(response.data.data.update_rate),
-            };
-
-            setGyroConfig(updatedConfig);
-            localStorage.setItem("gyroConfig", JSON.stringify(updatedConfig));
-            closeGyroConfig();
-            console.log("✅ Gyro config saved successfully");
-          }
-        } catch (patchError) {
-          // Jika 404, berarti Gyro data belum ada, create dulu
-          if (patchError.response && patchError.response.status === 404) {
-            console.log("⚠️ Gyro data not found, creating new gyro data...");
-
-            // Create Gyro data dengan config
-            const createPayload = {
-              heading_true: 0.0,
-              pitch: 0.0,
-              roll: 0.0,
-              heading_rate: 0.0,
-              update_rate: parseInt(newConfig.updateRate, 10),
-              is_running: false,
-            };
-
-            // POST untuk create Gyro data
-            await axios.post("http://localhost:8080/api/gyro", createPayload);
-            console.log("✅ Gyro data created");
-
-            // Sekarang PATCH config lagi
-            const response = await axios.patch(
-              "http://localhost:8080/api/gyro/config",
-              payload
-            );
-
-            if (response.data && response.data.data) {
-              const updatedConfig = {
-                ip: response.data.data.ip,
-                port: String(response.data.data.port),
-                topic: response.data.data.topics || [],
-                username: response.data.data.username,
-                password: response.data.data.password,
-                updateRate: String(response.data.data.update_rate),
-              };
-
-              setGyroConfig(updatedConfig);
-              localStorage.setItem("gyroConfig", JSON.stringify(updatedConfig));
-              closeGyroConfig();
-              console.log("✅ Gyro config saved successfully after creation");
-            }
-          } else {
-            throw patchError;
-          }
-        }
-      } catch (error) {
-        console.error(
-          "❌ Failed to save gyro config:",
-          error.response?.data || error.message
-        );
-
-        const errorMessage =
-          error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Failed to save gyro configuration. Please check your input and try again.";
-        alert(errorMessage);
-      }
-    } else {
-      console.error("❌ Invalid gyro configuration - some fields are empty");
-      alert(
-        "All configuration fields must be filled, including at least one topic."
-      );
-    }
-  };
-
-  // Handler untuk default gyro config
-  const handleGyroConfigDefault = async () => {
-    try {
-      await axios.delete("http://localhost:8080/api/gyro/config");
-      console.log("✅ Gyro Config deleted");
-
-      // Setelah delete, gunakan default config lokal
-      const defaultGyroConfig = {
-        ip: "192.168.1.10",
-        port: "1884",
-        topic: ["gyro/sim", "device/attitude"],
-        username: "user_gyro",
-        password: "password123",
-        updateRate: "500",
-      };
-      setGyroConfig(defaultGyroConfig);
-      localStorage.setItem("gyroConfig", JSON.stringify(defaultGyroConfig));
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.log("⚠️ No gyro config to delete, using default config");
-        const defaultGyroConfig = {
-          ip: "192.168.1.10",
-          port: "1884",
-          topic: ["gyro/sim", "device/attitude"],
-          username: "user_gyro",
-          password: "password123",
-          updateRate: "500",
-        };
-        setGyroConfig(defaultGyroConfig);
-        localStorage.setItem("gyroConfig", JSON.stringify(defaultGyroConfig));
-      } else {
-        console.error("❌ Failed to reset gyro config:", error.message);
-        const defaultGyroConfig = {
-          ip: "192.168.1.10",
-          port: "1884",
-          topic: ["gyro/sim", "device/attitude"],
-          username: "user_gyro",
-          password: "password123",
-          updateRate: "500",
-        };
-        setGyroConfig(defaultGyroConfig);
-        localStorage.setItem("gyroConfig", JSON.stringify(defaultGyroConfig));
-      }
-    }
-  };
-
-  // Handler untuk clear gyro config
-  const handleGyroConfigClear = () => {
-    const emptyConfig = {
-      ip: "",
-      port: "",
-      topic: [],
-      username: "",
-      password: "",
-      updateRate: "",
-    };
-    setGyroConfig(emptyConfig);
-    localStorage.removeItem("gyroConfig");
-  };
-
-  // Fetch config saat komponen dimount
-  useEffect(() => {
-    fetchGyroConfig();
-  }, []);
 
   // --- B. Handlers ---
   const handleInputChange = (e) => {
@@ -543,6 +353,27 @@ function GyroPage() {
     }));
   };
 
+  const showConfirmation = (config) => {
+    setConfirmPopup({
+      isOpen: true,
+      ...config
+    });
+  };
+
+  const closeConfirmPopup = () => {
+    setConfirmPopup({
+      isOpen: false,
+      title: "",
+      message: "",
+      onConfirm: () => {},
+    });
+  };
+
+  const handleConfirm = () => {
+    confirmPopup.onConfirm();
+    closeConfirmPopup();
+  };
+
   // --- C. Fungsi Helper & Formatter ---
   const renderGyroStatusImage = () => {
     switch (simData.status) {
@@ -575,6 +406,11 @@ function GyroPage() {
   // --- D. Tampilan / JSX ---
   return (
     <div className="gyro-page-scope">
+      {/* Gyro Config Saved Notification */}
+      {gyroConfigSaved && (
+        <div className="global-config-saved-notif">Config saved!</div>
+      )}
+
       <ConfigPopup
         isOpen={isGyroConfigOpen}
         onClose={closeGyroConfig}

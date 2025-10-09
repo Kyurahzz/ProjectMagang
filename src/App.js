@@ -6,6 +6,7 @@ import ConfirmationPopup from "./components/ConfirmationPopUp";
 import DarkModeToggle from "./components/DarkModeToggle";
 import GyroPage from "./components/GyroPage";
 import { ConfigProvider, useConfig } from "./components/ConfigContext";
+import { useSensorConfig } from "./hooks/useSensorConfig";
 
 // --- Asset Imports ---
 import iconDashboard from "./assets/inactive/Property 1=Dashboard_icon-Default.png";
@@ -57,14 +58,16 @@ const AppContent = () => {
     password: "admin",
     updateRate: "1000",
   };
-  const emptyConfig = {
-    ip: "",
-    port: "",
-    topic: [],
-    username: "",
-    password: "",
-    updateRate: "",
-  };
+
+  // Custom hook untuk GPS config
+  const {
+    config,
+    setConfig,
+    saveConfig: handleConfigSave,
+    resetToDefault: handleDefaultConfig,
+    clearConfig: handleClearConfig,
+    configSaved, // Hanya ambil dari hook, HAPUS useState di bawah
+  } = useSensorConfig("gps", defaultConfig, closeGpsConfig);
 
   // State Data & Input
   const [inputData, setInputData] = useState(defaultInput);
@@ -83,8 +86,7 @@ const AppContent = () => {
   const [isRecordCreated, setIsRecordCreated] = useState(false);
 
   // State Konfigurasi & Popup
-  const [config, setConfig] = useState(defaultConfig);
-  const [configSaved, setConfigSaved] = useState(false);
+  // HAPUS BARIS INI: const [configSaved, setConfigSaved] = useState(false);
   const [isConfigured, setIsConfigured] = useState(true);
   const [confirmPopup, setConfirmPopup] = useState({
     isOpen: false,
@@ -252,7 +254,7 @@ const AppContent = () => {
   };
 
   const handleStartSimulation = async () => {
-    console.log("🎮 CLIENT: Starting simulation");
+    console.log(" CLIENT: Starting simulation");
 
     clientControlRef.current = {
       isClientControlled: true,
@@ -304,7 +306,7 @@ const AppContent = () => {
   };
 
   const handleStopSimulation = async () => {
-    console.log("🎮 CLIENT: Stopping simulation");
+    console.log("CLIENT: Stopping simulation");
 
     clientControlRef.current = {
       isClientControlled: true,
@@ -525,140 +527,6 @@ const AppContent = () => {
     setEditWarning("");
   };
 
-  // Tambahkan state untuk tracking config dari server
-  const [serverConfig, setServerConfig] = useState(null);
-
-  // Fungsi untuk fetch config dari API
-  const fetchGpsConfig = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/api/gps/config");
-      if (response.data && response.data.data) {
-        const configFromServer = {
-          ip: response.data.data.ip,
-          port: String(response.data.data.port),
-          topic: response.data.data.topics || [],
-          username: response.data.data.username,
-          password: response.data.data.password,
-          updateRate: String(response.data.data.update_rate),
-        };
-        setConfig(configFromServer);
-        setServerConfig(configFromServer);
-        localStorage.setItem("gpsConfig", JSON.stringify(configFromServer));
-        console.log("✅ Config loaded from server");
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.log("⚠️ No GPS config found on server, using default config.");
-        const savedConfig = localStorage.getItem("gpsConfig");
-        if (savedConfig) {
-          setConfig(JSON.parse(savedConfig));
-        } else {
-          setConfig(defaultConfig);
-          localStorage.setItem("gpsConfig", JSON.stringify(defaultConfig));
-        }
-      } else {
-        console.error("Failed to fetch GPS config:", error.message);
-      }
-    }
-  };
-
-  // Handler untuk save config yang terintegrasi dengan API
-  const handleConfigSave = async (newConfig) => {
-    const isNewConfigValid = Object.entries(newConfig).every(([key, value]) => {
-      if (key === "topic") return Array.isArray(value) && value.length > 0;
-      return String(value).trim() !== "";
-    });
-
-    if (isNewConfigValid) {
-      try {
-        const payload = {
-          ip: newConfig.ip,
-          port: parseInt(newConfig.port, 10),
-          username: newConfig.username,
-          password: newConfig.password,
-          update_rate: parseInt(newConfig.updateRate, 10),
-          topics: newConfig.topic,
-        };
-
-        // PATCH akan create atau update config
-        const response = await axios.patch(
-          "http://localhost:8080/api/gps/config",
-          payload
-        );
-
-        if (response.data && response.data.data) {
-          const updatedConfig = {
-            ip: response.data.data.ip,
-            port: String(response.data.data.port),
-            topic: response.data.data.topics || [],
-            username: response.data.data.username,
-            password: response.data.data.password,
-            updateRate: String(response.data.data.update_rate),
-          };
-
-          setConfig(updatedConfig);
-          localStorage.setItem("gpsConfig", JSON.stringify(updatedConfig));
-          setConfigSaved(true);
-          setTimeout(() => setConfigSaved(false), 2000);
-          setIsConfigured(true);
-          closeGpsConfig();
-
-          console.log("✅ Config saved successfully");
-        }
-      } catch (error) {
-        console.error(
-          "❌ Failed to save config to server:",
-          error.response?.data || error.message
-        );
-
-        const errorMessage =
-          error.response?.data?.message ||
-          error.response?.data?.error ||
-          "Failed to save configuration. Please check your input and try again.";
-        alert(errorMessage);
-      }
-    } else {
-      setIsConfigured(false);
-      console.error("❌ Invalid configuration - some fields are empty");
-      alert(
-        "All configuration fields must be filled, including at least one topic."
-      );
-    }
-  };
-
-  // Handler untuk default config
-  const handleDefaultConfig = async () => {
-    try {
-      await axios.delete("http://localhost:8080/api/gps/config");
-      console.log("✅ Config deleted");
-
-      // Setelah delete, gunakan default config lokal
-      setConfig(defaultConfig);
-      localStorage.setItem("gpsConfig", JSON.stringify(defaultConfig));
-      setConfigSaved(true);
-      setTimeout(() => setConfigSaved(false), 2000);
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.log("⚠️ No config to delete, using default config");
-        setConfig(defaultConfig);
-        localStorage.setItem("gpsConfig", JSON.stringify(defaultConfig));
-        setConfigSaved(true);
-        setTimeout(() => setConfigSaved(false), 2000);
-      } else {
-        console.error("❌ Failed to reset config:", error.message);
-        setConfig(defaultConfig);
-        localStorage.setItem("gpsConfig", JSON.stringify(defaultConfig));
-      }
-    }
-  };
-
-  // Update handleClearConfig
-  const handleClearConfig = () => {
-    setConfig(emptyConfig);
-    setIsConfigured(false);
-    localStorage.removeItem("gpsConfig");
-  };
-
   // --- Side Effects ---
   useEffect(() => {
     let isMounted = true;
@@ -668,7 +536,7 @@ const AppContent = () => {
         wsClient.current = new WebSocket("ws://localhost:8081");
 
         wsClient.current.onopen = () => {
-          console.log("🔗 WebSocket Connected");
+          console.log(" WebSocket Connected");
         };
 
         wsClient.current.onmessage = (event) => {
@@ -722,7 +590,7 @@ const AppContent = () => {
         };
 
         wsClient.current.onclose = () => {
-          console.log("🔌 WebSocket Disconnected");
+          console.log("WebSocket Disconnected");
           if (isMounted) {
             setStatus("Disconnected");
           }
@@ -792,14 +660,6 @@ const AppContent = () => {
       }
     };
   }, [isSimulationActive]);
-
-  // Tambahkan useEffect untuk fetch config saat pertama kali load
-  useEffect(() => {
-    // Fetch config dari server saat aplikasi pertama kali dibuka
-    if (activeMenu === "GPS") {
-      fetchGpsConfig();
-    }
-  }, []); // Run once on mount
 
   // --- Render Logic ---
   const isDisabled = !isConfigured;
@@ -880,6 +740,7 @@ const AppContent = () => {
           title={confirmPopup.title}
           message={confirmPopup.message}
         />
+        
         <header className="simulator-header">
           <h1>{pageTitles[activeMenu] || "Simulator"}</h1>
           <button className="config-button" onClick={handleHeaderConfigClick}>
@@ -889,6 +750,7 @@ const AppContent = () => {
 
         {activeMenu === "GPS" && (
           <GpsPage>
+            {/* Config Saved Notification - Gunakan configSaved dari hook */}
             {configSaved && (
               <div className="global-config-saved-notif">Config saved!</div>
             )}

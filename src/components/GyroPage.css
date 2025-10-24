@@ -58,9 +58,9 @@
 
 .gyro-page-scope .header-action-btn {
   border: none;
-  border-radius: 10px;
-  width: 38px;
-  height: 38px;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,7 +78,7 @@
 }
 
 .gyro-page-scope .header-action-btn.config-btn {
-  background-color: #5D9CEC; /* Warna biru berbeda untuk membedakan */
+  background-color: #5D9CEC;
 }
 
 .gyro-page-scope .header-action-btn.delete-btn {
@@ -102,36 +102,45 @@
 .gyro-page-scope .last-update-box,
 .gyro-page-scope .status-container {
   background-color: var(--bg-panel-inner);
-  border: 1px solid var(--border-primary);
   border-radius: 8px;
-  padding: 15px;
+  padding: 18px 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .gyro-page-scope .last-update-value {
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 400;
+  font-family: 'Roboto', monospace;
 }
+
 .gyro-page-scope .status-container {
   display: flex;
-  gap: 40px;
+  gap: 50px;
   align-items: center;
   flex-grow: 1;
 }
+
 .gyro-page-scope .status-item {
   display: flex;
   flex-direction: column;
 }
+
 .gyro-page-scope .status-label {
   font-size: 12px;
   text-transform: uppercase;
   margin-bottom: 5px;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
+
 .gyro-page-scope .status-image {
   max-width: 65px;
 }
+
 .gyro-page-scope .update-rate-value {
   font-size: 16px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 /* --- KOTAK VISUAL UTAMA --- */
@@ -211,7 +220,46 @@
   overflow: visible;
 }
 
-.gyro-page-scope .gauge-dial-sky{fill:#aed6f1}.gyro-page-scope .gauge-dial-sea{fill:#3498db}.gyro-page-scope .gauge-tick{stroke:#333;stroke-width:3}.gyro-page-scope .gauge-label-cardinal{font-size:22px;font-weight:700;fill:#333;text-anchor:middle;dominant-baseline:middle;font-family:Roboto,sans-serif}.gyro-page-scope .ship-indicator{max-width:60%;position:relative;z-index:10;transition:transform .2s linear}.gyro-page-scope .ship-indicator.stationary-ship{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}.gyro-page-scope .roll-arc{fill:#f8f9fa;stroke:#e0e0e0;stroke-width:2}.gyro-page-scope .roll-pointer{fill:#333}.gyro-page-scope .roll-sea{fill:#3498db}.gyro-page-scope .roll-labels-svg{font-size:18px;font-weight:700;fill:#fff;font-family:Roboto,sans-serif}.gyro-page-scope .ship-indicator-svg{transform-origin:center;transform:translateY(-35px) scale(.75)}
+.gyro-page-scope .gauge-dial-sky { fill: #aed6f1; }
+.gyro-page-scope .gauge-dial-sea { fill: #3498db; }
+.gyro-page-scope .gauge-tick { stroke: #333; stroke-width: 3; }
+.gyro-page-scope .gauge-label-cardinal {
+  font-size: 22px;
+  font-weight: 700;
+  fill: #333;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-family: Roboto, sans-serif;
+}
+.gyro-page-scope .ship-indicator {
+  max-width: 60%;
+  position: relative;
+  z-index: 10;
+  transition: transform 0.2s linear;
+}
+.gyro-page-scope .ship-indicator.stationary-ship {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.gyro-page-scope .roll-arc {
+  fill: #f8f9fa;
+  stroke: #e0e0e0;
+  stroke-width: 2;
+}
+.gyro-page-scope .roll-pointer { fill: #333; }
+.gyro-page-scope .roll-sea { fill: #3498db; }
+.gyro-page-scope .roll-labels-svg {
+  font-size: 18px;
+  font-weight: 700;
+  fill: #fff;
+  font-family: Roboto, sans-serif;
+}
+.gyro-page-scope .ship-indicator-svg {
+  transform-origin: center;
+  transform: translateY(-35px) scale(0.75);
+}
 
 /* --- Tombol Aksi Utama --- */
 .gyro-page-scope .action-buttons-container {
@@ -220,11 +268,11 @@
   justify-content: center;
   background-color: var(--bg-action-panel);
   padding: 8px 12px;
-  border-radius: 24px;
-  margin-top: auto;
+  border-radius: 16px;
   margin-left: auto;
   margin-right: auto;
   gap: 10px;
+  transition: background-color 0.3s ease;
 }
 
 .gyro-page-scope .action-btn {
@@ -238,7 +286,6 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.2s ease;
 }
 
 .gyro-page-scope .action-btn.stop-btn {
@@ -257,12 +304,12 @@
 .gyro-page-scope .action-btn.delete-btn {
   background-color: var(--button-red);
   width: auto;
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 8px 16px;
   color: white;
   font-weight: 500;
   font-size: 14px;
-  gap: 8px;
+  gap: 10px;
 }
 
 .gyro-page-scope .action-btn img {
@@ -344,84 +391,101 @@
 }
 
 /* --- TAMBAHAN: STYLE UNTUK TOMBOL DISABLED --- */
-.action-btn:disabled,
-.header-action-btn:disabled:not(.edit-btn) {
+.gyro-page-scope .action-btn:disabled,
+.gyro-page-scope .header-action-btn:disabled:not(.edit-btn) {
   cursor: not-allowed;
   opacity: 0.5;
   box-shadow: none;
 }
-.header-action-btn.edit-btn:disabled {
-    cursor: not-allowed;
+
+.gyro-page-scope .header-action-btn.edit-btn:disabled {
+  cursor: not-allowed;
 }
-.action-btn:not(:disabled):hover,
-.header-action-btn:not(:disabled):hover {
+
+.gyro-page-scope .action-btn:not(:disabled):hover,
+.gyro-page-scope .header-action-btn:not(:disabled):hover {
   transform: scale(1.1);
 }
-.header-action-btn.edit-btn:disabled:hover {
-    transform: scale(1);
+
+.gyro-page-scope .header-action-btn.edit-btn:disabled:hover {
+  transform: scale(1);
 }
 
 /* --- TAMBAHAN: OVERRIDE WARNA DARK MODE --- */
 [data-theme='dark'] .gyro-page-scope .gyro-visuals-container {
   background-color: #4D4D4D;
 }
+
 [data-theme='dark'] .gyro-page-scope .input-group input:disabled {
   background-color: #4B5563;
   color: #9CA3AF;
   border-color: transparent;
   opacity: 0.8;
 }
+
 [data-theme='dark'] .gyro-page-scope .gauge-tick {
   stroke: lightgray;
 }
+
 [data-theme='dark'] .gyro-page-scope .gauge-label-cardinal,
 [data-theme='dark'] .gyro-page-scope .roll-pointer {
   fill: #ffffff;
 }
+
 [data-theme='dark'] .gyro-page-scope .roll-labels-svg {
   fill: lightgray;
 }
+
 [data-theme='dark'] .gyro-page-scope .card-footer {
   color: #ffffff;
 }
 
 /* --- TAMBAHAN: Style untuk Kontrol Heading Rate --- */
-.heading-rate-control {
-  flex-direction: column; 
-  align-items: center;    
-  gap: 4px;               
+.gyro-page-scope .heading-rate-control {
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
-/* Penyesuaian untuk tulisan "Heading Rate" */
-.heading-rate-control > span:first-child {
+.gyro-page-scope .heading-rate-control > span:first-child {
   font-size: 12px;
   color: var(--text-secondary);
   font-weight: 500;
 }
-.rate-control-group {
+
+.gyro-page-scope .rate-control-group {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.rate-btn {
+
+.gyro-page-scope .rate-btn {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 28px; /* Ukuran panah */
+  font-size: 28px;
   padding: 0 5px;
   line-height: 1;
 }
-.btn-decrease {
-  color: #A0AEC0; /* Warna abu-abu */
+
+.gyro-page-scope .btn-decrease {
+  color: #A0AEC0;
 }
-[data-theme='dark'] .btn-decrease {
-  color: #718096; /* Warna abu-abu di dark mode */
+
+[data-theme='dark'] .gyro-page-scope .btn-decrease {
+  color: #718096;
 }
-.btn-increase {
-  color: var(--button-blue); /* Warna biru dari variabel tema */
+
+.gyro-page-scope .btn-increase {
+  color: var(--button-blue);
 }
-.rate-value {
-  font-size: 1.5rem; /* Ukuran font 15°/min */
+
+.gyro-page-scope .rate-value {
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.gyro-visuals-container .gyro-card:first-child .gauge-container {
+  transform: translateY(-34px);
 }

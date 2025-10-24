@@ -62,9 +62,17 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear }) {
     setWarning("");
   };
 
-  const handleSave = () => {
+  const handleApply = () => {
+    console.log("Apply clicked - saving data but keeping popup open");
+    onSave(tempConfig);
+    // Tetap dalam mode editing, tidak tutup popup
+  };
+
+  const handleSaveAndClose = () => {
+    console.log("Save clicked - saving data and closing popup");
     onSave(tempConfig);
     setIsEditing(false);
+    onClose(); // Hanya di sini panggil onClose
   };
 
   const handleClearAndEdit = () => {
@@ -88,11 +96,19 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear }) {
 
   const handleEditClick = () => {
     if (isEditing) {
-      handleSave();
+      console.log("Apply button clicked");
+      handleApply();
     } else {
+      console.log("Edit button clicked");
       setIsEditing(true);
     }
     setWarning("");
+  };
+
+  // Tambahkan ini untuk debug
+  const handleCloseClick = () => {
+    console.log("Close button clicked");
+    onClose();
   };
 
   return (
@@ -102,7 +118,7 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear }) {
           <div className="header-content-left">
             <span className="popup-title">CONFIGURATION</span>
           </div>
-          <button className="popup-close" onClick={onClose}>
+          <button className="popup-close" onClick={handleCloseClick}>
             &times;
           </button>
         </div>
@@ -221,7 +237,7 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear }) {
               <button
                 className="header-btn edit-btn"
                 onClick={handleEditClick}
-                // disabled={!isEditing && tempConfig.ip === ""}
+                type="button" // Tambahkan ini
               >
                 <img src={iconEdit} alt={isEditing ? "Apply" : "Edit"} />
                 <span>{isEditing ? "Apply" : "Edit"}</span>
@@ -230,6 +246,7 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear }) {
                 className="header-btn delete-btn"
                 onClick={handleClearAndEdit}
                 disabled={!isEditing}
+                type="button" // Tambahkan ini
               >
                 <img src={iconDelete} alt="Delete" />
               </button>
@@ -241,12 +258,14 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear }) {
                   <button
                     className="popup-btn-default config-btn"
                     onClick={handleCancel}
+                    type="button" // Tambahkan ini
                   >
                     CANCEL
                   </button>
                   <button
                     className="popup-btn-save config-btn"
-                    onClick={handleSave}
+                    onClick={handleSaveAndClose}
+                    type="button" // Tambahkan ini
                   >
                     SAVE
                   </button>
@@ -256,12 +275,14 @@ function ConfigPopup({ isOpen, onClose, config, onSave, onDefault, onClear }) {
                   <button
                     className="popup-btn-default config-btn"
                     onClick={handleDefaultClick}
+                    type="button" // Tambahkan ini
                   >
                     DEFAULT
                   </button>
                   <button
                     className="popup-btn-save config-btn"
-                    onClick={handleSave}
+                    onClick={handleSaveAndClose}
+                    type="button" // Tambahkan ini
                   >
                     SAVE
                   </button>

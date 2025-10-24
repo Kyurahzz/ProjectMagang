@@ -246,13 +246,11 @@ body, html {
   border-radius: 8px;
   padding: 18px 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .last-update-value {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 400;
   font-family: 'Roboto', monospace;
 }
 
@@ -405,7 +403,7 @@ body, html {
   background-color: rgba(255, 255, 255, 0.5); 
   margin: 0 16px; 
 }
-.action-delete-btn { 
+.action-delete-btn {  
   display: flex; 
   align-items: center; 
   gap: 8px; 
@@ -538,6 +536,6 @@ body, html {
   .other-data-section,
   .status-container {
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
   }
 }
